@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Protocol Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf9f6;
+            color: #3e3c3a;
+        }
+
+        .heading-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+
+        /* Custom Checkbox */
+        .timeline-checkbox {
+            appearance: none;
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 2px solid #d6d3d1; /* stone-300 */
+            border-radius: 50%;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            background-color: white;
+            transition: all 0.2s ease-in-out;
+            z-index: 10;
+        }
+
+        .timeline-checkbox:checked {
+            background-color: #059669; /* emerald-600 */
+            border-color: #059669;
+        }
+
+        .timeline-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Strikethrough effect on checked */
+        .timeline-item.completed .item-content h3,
+        .timeline-item.completed .item-content p {
+            color: #a8a29e; /* stone-400 */
+        }
+        .timeline-item.completed .item-content h3 {
+            text-decoration: line-through;
+        }
+
+        /* Timeline Line */
+        .timeline-line {
+            position: absolute;
+            left: 1.15rem; /* align center of checkbox */
+            top: 2rem;
+            bottom: -1rem;
+            width: 2px;
+            background-color: #e7e5e4; /* stone-200 */
+            z-index: 1;
+        }
+
+        .timeline-item:last-child .timeline-line {
+            display: none;
+        }
+        
+        .progress-circle {
+            transition: stroke-dashoffset 0.5s ease-in-out;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-16">
+
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="heading-font text-3xl text-emerald-900 font-semibold">Daily Protocol</h1>
+                    <p class="text-stone-500 text-sm" id="currentDate">Monday - Friday Routine</p>
+                </div>
+                
+                <!-- Circular Progress -->
+                <div class="relative w-16 h-16 flex items-center justify-center">
+                    <svg class="w-full h-full" viewBox="0 0 100 100">
+                        <!-- Background Circle -->
+                        <circle class="text-stone-100 stroke-current" stroke-width="8" cx="50" cy="50" r="40" fill="transparent"></circle>
+                        <!-- Progress Circle -->
+                        <circle id="progressCircle" class="text-emerald-500 progress-circle stroke-current" stroke-width="8" stroke-linecap="round" cx="50" cy="50" r="40" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
+                    </svg>
+                    <div class="absolute flex flex-col items-center justify-center">
+                        <span id="progressText" class="text-sm font-bold text-emerald-900">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 pt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Left Column: The Timeline -->
+        <div class="md:col-span-2 space-y-2">
+            
+            <div class="mb-6 flex justify-between items-end">
+                <h2 class="font-bold text-stone-800 uppercase tracking-wider text-sm flex items-center gap-2">
+                    <span class="text-xl">🌅</span> Morning Grind
+                </h2>
+            </div>
+            <div id="morningTimeline" class="space-y-0 relative ml-2">
+                <!-- Injected via JS -->
+            </div>
+
+            <div class="mt-10 mb-6 flex justify-between items-end">
+                <h2 class="font-bold text-stone-800 uppercase tracking-wider text-sm flex items-center gap-2">
+                    <span class="text-xl">🏢</span> Work Day & Nutrition
+                </h2>
+            </div>
+            <div id="workTimeline" class="space-y-0 relative ml-2">
+                <!-- Injected via JS -->
+            </div>
+
+            <div class="mt-10 mb-6 flex justify-between items-end">
+                <h2 class="font-bold text-stone-800 uppercase tracking-wider text-sm flex items-center gap-2">
+                    <span class="text-xl">🌙</span> Evening Wind-Down
+                </h2>
+            </div>
+            <div id="eveningTimeline" class="space-y-0 relative ml-2">
+                <!-- Injected via JS -->
+            </div>
+
+        </div>
+
+        <!-- Right Column: Habit Summary -->
+        <div class="space-y-6 md:sticky md:top-28 h-fit">
+            
+            <div class="bg-stone-800 text-stone-100 rounded-3xl p-6 shadow-xl">
+                <h3 class="heading-font text-xl mb-4 text-white">Daily Targets</h3>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-stone-700 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-stone-700 p-2 rounded-lg text-blue-400">💧</div>
+                            <span class="text-sm font-medium">Hydration</span>
+                        </div>
+                        <span class="text-xs text-stone-400">500ml upon waking</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between border-b border-stone-700 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-stone-700 p-2 rounded-lg text-orange-400">💊</div>
+                            <span class="text-sm font-medium">Supplements</span>
+                        </div>
+                        <span class="text-xs text-stone-400">Morning & Night</span>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-stone-700 p-2 rounded-lg text-indigo-400">💤</div>
+                            <span class="text-sm font-medium">Recovery</span>
+                        </div>
+                        <span class="text-xs text-stone-400">Strictly asleep at 9 PM</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-3xl p-6">
+                <h3 class="font-bold text-stone-800 text-sm uppercase tracking-wide mb-3 flex items-center gap-2">
+                    <span>💡</span> Protocol Notes
+                </h3>
+                <p class="text-sm text-stone-600 mb-2">
+                    <strong>Pre-packed is Key:</strong> Ensure lunch box and snack container are ready in the fridge the night before.
+                </p>
+                <p class="text-sm text-stone-600">
+                    <strong>Screen Curfew:</strong> No screens after 8:00 PM to maximize natural melatonin production before your 9:00 PM baseline target.
+                </p>
+            </div>
+            
+            <button onclick="resetDay()" class="w-full mt-4 border border-stone-300 text-stone-600 py-3 rounded-xl font-medium hover:bg-stone-100 transition-colors">
+                Reset Day
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        const routineData = [
+            // Morning
+            { id: 't1', time: '5:30 AM', title: 'Alarm Goes Off', note: 'Wake up immediately. Drink 500ml water.', section: 'morning', icon: '⏰' },
+            { id: 't2', time: '6:00 AM', title: 'Leave for Gym', note: '15-minute drive to the gym.', section: 'morning', icon: '🚗' },
+            { id: 't3', time: '6:30 AM', title: 'Workout Block', note: 'Heavy 5x5 compound lifts or bouldering (until 7:45 AM).', section: 'morning', icon: '🏋️' },
+            { id: 't4', time: '8:00 AM', title: 'Shower & Pack', note: 'Get ready at home. Grab pre-packed lunch box and snack.', section: 'morning', icon: '🚿' },
+            { id: 't5', time: '8:40 AM', title: 'Leave for Work', note: '20-minute drive.', section: 'morning', icon: '🚗' },
+            // Work
+            { id: 't6', time: '9:00 AM', title: 'Arrive at Work', note: 'Take Multivitamin, Probiotic, and Omega Triple at desk.', section: 'work', icon: '🏢' },
+            { id: 't7', time: '9:15 AM', title: 'Breakfast', note: 'Eat pre-cooked breakfast at your work desk.', section: 'work', icon: '🍳', highlight: 'bg-amber-50' },
+            { id: 't8', time: '1:00 PM', title: 'Lunch', note: 'Reheat prepped lunch box in the work microwave.', section: 'work', icon: '🍱', highlight: 'bg-emerald-50' },
+            { id: 't9', time: '3:30 PM', title: 'Mid-Afternoon Snack', note: 'Use work kettle for oats. Mix in collagen powder.', section: 'work', icon: '🥣', highlight: 'bg-blue-50' },
+            { id: 't10', time: '5:00 PM', title: 'Finish Work', note: '20-minute drive home.', section: 'work', icon: '🏁' },
+            // Evening
+            { id: 't11', time: '6:00 PM', title: 'Dinner', note: 'Reheat prepped dinner box at home.', section: 'evening', icon: '🍽️', highlight: 'bg-orange-50' },
+            { id: 't12', time: '7:00 PM', title: 'Leisure Time', note: 'Relax, pack your containers for the next day.', section: 'evening', icon: '🛋️' },
+            { id: 't13', time: '8:00 PM', title: 'Get in Bed', note: 'Wind down. No phone screens.', section: 'evening', icon: '🛏️' },
+            { id: 't14', time: '8:15 PM', title: 'Night Supplement', note: 'Drink Magnesium powder mixed in warm water.', section: 'evening', icon: '💊' },
+            { id: 't15', time: '9:00 PM', title: 'Sleep', note: 'Strictly asleep to hit your baseline recovery target.', section: 'evening', icon: '💤' },
+        ];
+
+        let completedItems = new Set();
+        const totalItems = routineData.length;
+
+        function initApp() {
+            renderSection('morningTimeline', routineData.filter(d => d.section === 'morning'));
+            renderSection('workTimeline', routineData.filter(d => d.section === 'work'));
+            renderSection('eveningTimeline', routineData.filter(d => d.section === 'evening'));
+            
+            // Set dynamic date text
+            const options = { weekday: 'long', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-AU', options);
+            
+            updateProgress();
+        }
+
+        function renderSection(containerId, items) {
+            const container = document.getElementById(containerId);
+            items.forEach((item, index) => {
+                const isLast = index === items.length - 1;
+                const highlightClass = item.highlight ? item.highlight + ' border border-stone-200' : 'hover:bg-stone-50';
+                
+                const div = document.createElement('div');
+                div.className = `timeline-item relative flex gap-6 pb-6 pt-1`;
+                div.id = `container-${item.id}`;
+                
+                div.innerHTML = `
+                    <div class="relative flex flex-col items-center">
+                        <input type="checkbox" id="${item.id}" class="timeline-checkbox flex-shrink-0" onchange="toggleItem('${item.id}', this.checked)">
+                        ${!isLast ? '<div class="timeline-line"></div>' : '<div class="timeline-line" style="display:none;"></div>'}
+                    </div>
+                    
+                    <label for="${item.id}" class="flex-1 cursor-pointer -mt-1 group">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-1">
+                            <span class="font-bold text-stone-900 w-20 text-sm shrink-0">${item.time}</span>
+                            <div class="item-content flex-1 bg-white rounded-xl p-4 shadow-sm transition-all ${highlightClass}">
+                                <h3 class="font-bold text-stone-800 text-lg flex items-center gap-2 mb-1">
+                                    <span class="text-xl opacity-80">${item.icon}</span> ${item.title}
+                                </h3>
+                                <p class="text-sm text-stone-600 leading-relaxed">${item.note}</p>
+                            </div>
+                        </div>
+                    </label>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function toggleItem(id, isChecked) {
+            const container = document.getElementById(`container-${id}`);
+            if (isChecked) {
+                completedItems.add(id);
+                container.classList.add('completed');
+            } else {
+                completedItems.delete(id);
+                container.classList.remove('completed');
+            }
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const percentage = Math.round((completedItems.size / totalItems) * 100);
+            
+            // Update Text
+            document.getElementById('progressText').innerText = `${percentage}%`;
+            
+            // Update Circle (Circumference = 2 * pi * r = 2 * 3.14159 * 40 ≈ 251.2)
+            const circumference = 251.2;
+            const offset = circumference - (percentage / 100) * circumference;
+            const circle = document.getElementById('progressCircle');
+            circle.style.strokeDashoffset = offset;
+
+            if (percentage === 100) {
+                circle.classList.replace('text-emerald-500', 'text-green-500');
+            } else {
+                circle.classList.replace('text-green-500', 'text-emerald-500');
+            }
+        }
+
+        function resetDay() {
+            completedItems.clear();
+            document.querySelectorAll('.timeline-checkbox').forEach(cb => {
+                cb.checked = false;
+                document.getElementById(`container-${cb.id}`).classList.remove('completed');
+            });
+            updateProgress();
+        }
+
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
