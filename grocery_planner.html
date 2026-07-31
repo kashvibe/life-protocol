@@ -22,7 +22,7 @@
         <div class="max-w-md mx-auto px-6 py-4 flex flex-col gap-3">
             <div class="flex justify-between items-center">
                 <a href="index.html" class="text-2xl" onclick="navigator.vibrate(15)">🏠</a>
-                <h1 class="text-xl font-bold tracking-tight">Coles Run</h1>
+                <h1 class="text-xl font-bold tracking-tight">Coles Budget Run</h1>
                 <button onclick="clearRun()" class="text-xs bg-stone-800 px-3 py-1 rounded text-stone-300 active:scale-95 transition-transform">Clear</button>
             </div>
             <div class="w-full bg-stone-800 rounded-full h-2 overflow-hidden relative">
@@ -38,28 +38,28 @@
     <script>
         const groceryData = {
             "Meat & Dairy": [
-                { id: 'm1', name: 'Chicken Thigh Fillets', qty: '900g' },
-                { id: 'm2', name: 'Firm Paneer block', qty: '500g' },
-                { id: 'm3', name: 'Large Eggs', qty: '1 Dozen' },
-                { id: 'm4', name: 'Greek Yoghurt', qty: '1kg' }
+                { id: 'm1', name: 'Coles RSPCA Chicken Breast', qty: '1.4kg' },
+                { id: 'm2', name: 'Large Eggs', qty: '1 Dozen' }
             ],
-            "Vegetables": [
-                { id: 'v1', name: 'Broccoli', qty: '750g' },
-                { id: 'v2', name: 'Green Beans', qty: '750g' },
-                { id: 'v3', name: 'Red Capsicum', qty: '750g' },
-                { id: 'v4', name: 'Zucchini', qty: '750g' },
-                { id: 'v5', name: 'Cherry Tomatoes', qty: '500g' }
+            "Frozen & Volume": [
+                { id: 'f1', name: 'Coles Simply Mixed Veg', qty: '3x 1kg' }
             ],
-            "Carbs & Care": [
-                { id: 'c1', name: 'Basmati Rice', qty: '1kg' },
-                { id: 'c2', name: 'Rolled Oats', qty: '1kg' },
-                { id: 'c3', name: 'Sweet Potatoes', qty: '1.5kg' },
-                { id: 'c4', name: 'Avène Spring Spray', qty: 'Restock' },
-                { id: 'c5', name: 'Oral-B Heads', qty: 'Restock' }
+            "Bulk Carbs & Staples": [
+                { id: 'p1', name: 'Coles Red Split Lentils', qty: '1kg' },
+                { id: 'p2', name: 'Coles White Long Grain Rice', qty: '1kg' },
+                { id: 'p3', name: 'Coles Simply Rolled Oats', qty: '1.8kg' },
+                { id: 'p4', name: 'Peanut Butter (Smooth/Crunchy)', qty: '500g Jar' }
+            ],
+            "Cosmetics & Care": [
+                { id: 'c1', name: 'Avène Spring Spray', qty: 'Restock' },
+                { id: 'c2', name: 'Oral-B Pro 100 Heads', qty: 'Restock' },
+                { id: 'c3', name: 'Vitamin C & Niacinamide', qty: 'Restock' },
+                { id: 'c4', name: 'Face Sunscreen & Wash', qty: 'Restock' },
+                { id: 'c5', name: 'Dry Shampoo & Styler', qty: 'Restock' }
             ]
         };
 
-        let checkedState = JSON.parse(localStorage.getItem('groceryState')) || [];
+        let checkedState = JSON.parse(localStorage.getItem('groceryStateBudget')) || [];
         let totalItems = 0;
 
         function initApp() {
@@ -101,7 +101,7 @@
                 checkedState = checkedState.filter(i => i !== id);
                 row.classList.remove('completed');
             }
-            localStorage.setItem('groceryState', JSON.stringify(checkedState));
+            localStorage.setItem('groceryStateBudget', JSON.stringify(checkedState));
             updateProgress();
         }
 
@@ -113,7 +113,7 @@
         function clearRun() {
             if(confirm("Clear list for next week?")) {
                 checkedState = [];
-                localStorage.setItem('groceryState', JSON.stringify(checkedState));
+                localStorage.setItem('groceryStateBudget', JSON.stringify(checkedState));
                 initApp();
             }
         }
