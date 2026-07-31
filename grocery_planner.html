@@ -2,320 +2,120 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Shopping Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Grocery Planner</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700&display=swap');
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #fdfbf7;
-            color: #3e3c3a;
-        }
-
-        .heading-font {
-            font-family: 'Playfair Display', serif;
-        }
-
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 350px;
-        }
-
-        .item-row:hover {
-            background-color: #f3f0eb;
-        }
-
-        .checkbox-custom:checked + label {
-            text-decoration: line-through;
-            color: #a09e9a;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        @media print {
-            .no-print { display: none !important; }
-            .print-break { page-break-before: always; }
-            body { background-color: white; }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0c0a09; color: #fafaf9; }
+        .glass-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .checkbox-custom { appearance: none; width: 1.25rem; height: 1.25rem; border: 2px solid #57534e; border-radius: 4px; outline: none; cursor: pointer; position: relative; background-color: transparent; transition: all 0.2s; }
+        .checkbox-custom:checked { background-color: #10b981; border-color: #10b981; }
+        .checkbox-custom:checked::after { content: '✓'; position: absolute; color: white; font-size: 0.8rem; font-weight: bold; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .item-row.completed { opacity: 0.4; }
+        .item-row.completed label { text-decoration: line-through; }
     </style>
 </head>
-<body class="min-h-screen pb-12">
+<body class="min-h-screen pb-24">
 
-    <!-- Chosen Palette: Warm Zen (Creams, Soft Greens, Earthy Accents) -->
-    <!-- Application Structure Plan: The SPA is organized into three primary functional zones: a 'Status Header' for rapid context (shopping day, progress), an 'Interactive Aisle List' for the core shopping task, and an 'Analytical Insight' section. The structure prioritizes the shopping experience; items are grouped by category to match typical store layouts. I've included a data visualization of the 'Fiber Weight' to highlight the specific health goals mentioned in the report (exact weights). The Cabinet Check is separated into its own interactive module to be completed before leaving the house. -->
-    <!-- Visualization & Content Choices: 
-        1. Produce Weight Breakdown -> Donut Chart -> Chart.js -> Visually represents the high-volume fiber targets from the report.
-        2. Shopping Progress -> Linear Progress Bar -> HTML/CSS/JS -> Provides immediate feedback on completion.
-        3. Grocery Categories -> Interactive Checklist -> Vanilla JS -> Handles state for item completion.
-        4. Cabinet Sync -> Toggle Lists -> HTML/JS -> Manages 'Home' vs 'Work' inventory.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-
-    <div class="max-w-4xl mx-auto px-4 pt-8">
-        <!-- Header Section -->
-        <header class="mb-8 text-center md:text-left">
-            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
-                <div>
-                    <h1 class="heading-font text-4xl text-emerald-900 mb-2">Weekly Coles Shop</h1>
-                    <p class="text-stone-500 italic">5 Weekdays • Saturday Morning Routine</p>
-                </div>
-                <div class="w-full md:w-64 bg-stone-200 rounded-full h-4 overflow-hidden relative">
-                    <div id="progressBar" class="bg-emerald-600 h-full transition-all duration-500" style="width: 0%"></div>
-                    <span id="progressText" class="absolute inset-0 text-[10px] flex items-center justify-center font-bold text-stone-800">0% COMPLETE</span>
-                </div>
+    <header class="glass-card sticky top-0 z-50 backdrop-blur-xl border-b-0">
+        <div class="max-w-md mx-auto px-6 py-4 flex flex-col gap-3">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="text-2xl" onclick="navigator.vibrate(15)">🏠</a>
+                <h1 class="text-xl font-bold tracking-tight">Coles Run</h1>
+                <button onclick="clearRun()" class="text-xs bg-stone-800 px-3 py-1 rounded text-stone-300 active:scale-95 transition-transform">Clear</button>
             </div>
-        </header>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- Left Column: Main Shopping List -->
-            <div class="lg:col-span-2 space-y-6">
-                
-                <section class="bg-white rounded-2xl p-6 shadow-sm border border-stone-100">
-                    <div class="flex items-center gap-2 mb-4 border-b pb-2">
-                        <span class="text-2xl">🥩</span>
-                        <h2 class="font-semibold text-lg uppercase tracking-wider text-stone-700">Meat & Dairy</h2>
-                    </div>
-                    <div id="meatList" class="space-y-3">
-                        <!-- Items injected by JS -->
-                    </div>
-                </section>
-
-                <section class="bg-white rounded-2xl p-6 shadow-sm border border-stone-100">
-                    <div class="flex items-center gap-2 mb-4 border-b pb-2">
-                        <span class="text-2xl">🥦</span>
-                        <h2 class="font-semibold text-lg uppercase tracking-wider text-stone-700">Vegetables (Fiber Targets)</h2>
-                    </div>
-                    <div id="vegList" class="space-y-3">
-                        <!-- Items injected by JS -->
-                    </div>
-                </section>
-
-                <section class="bg-white rounded-2xl p-6 shadow-sm border border-stone-100">
-                    <div class="flex items-center gap-2 mb-4 border-b pb-2">
-                        <span class="text-2xl">🍞</span>
-                        <h2 class="font-semibold text-lg uppercase tracking-wider text-stone-700">Carbs & Pantry</h2>
-                    </div>
-                    <div id="carbList" class="space-y-3">
-                        <!-- Items injected by JS -->
-                    </div>
-                </section>
-
-                <section class="bg-white rounded-2xl p-6 shadow-sm border border-stone-100">
-                    <div class="flex items-center gap-2 mb-4 border-b pb-2">
-                        <span class="text-2xl">🧴</span>
-                        <h2 class="font-semibold text-lg uppercase tracking-wider text-stone-700">Personal Care (Restock)</h2>
-                    </div>
-                    <div id="careList" class="space-y-3">
-                        <!-- Items injected by JS -->
-                    </div>
-                </section>
-            </div>
-
-            <!-- Right Column: Analytics and Cabinets -->
-            <div class="space-y-6">
-                
-                <section class="bg-emerald-50 rounded-2xl p-6 border border-emerald-100 no-print">
-                    <h3 class="heading-font text-xl text-emerald-900 mb-4 text-center">Fiber Volume Analysis</h3>
-                    <p class="text-xs text-emerald-700 mb-4 text-center">Breakdown of the 3.75kg fresh produce requirement.</p>
-                    <div class="chart-container">
-                        <canvas id="fiberChart"></canvas>
-                    </div>
-                </section>
-
-                <section class="bg-stone-800 text-stone-100 rounded-2xl p-6 shadow-xl">
-                    <h3 class="font-semibold text-lg mb-4 flex items-center gap-2">
-                        <span>🏠</span> Home Cabinet
-                    </h3>
-                    <div id="homeCabinet" class="space-y-2 text-sm">
-                        <!-- Items injected by JS -->
-                    </div>
-
-                    <h3 class="font-semibold text-lg mt-8 mb-4 flex items-center gap-2 border-t border-stone-700 pt-4">
-                        <span>🏢</span> Work Cabinet
-                    </h3>
-                    <div id="workCabinet" class="space-y-2 text-sm">
-                        <!-- Items injected by JS -->
-                    </div>
-                </section>
-
-                <div class="flex flex-col gap-3 no-print">
-                    <button onclick="window.print()" class="w-full bg-white border-2 border-stone-200 py-3 rounded-xl font-semibold hover:bg-stone-50 transition-colors">
-                        🖨️ Print List
-                    </button>
-                    <button onclick="resetList()" class="w-full bg-stone-100 text-stone-500 py-2 rounded-xl text-sm hover:text-stone-800 transition-colors">
-                        Reset Checklist
-                    </button>
-                </div>
+            <div class="w-full bg-stone-800 rounded-full h-2 overflow-hidden relative">
+                <div id="progressBar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-500 w-0"></div>
             </div>
         </div>
-    </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-6 pt-6 space-y-6" id="listContainer">
+        <!-- Injected via JS -->
+    </main>
 
     <script>
         const groceryData = {
-            meat: [
-                { id: 'm1', name: 'Chicken Thigh Fillets', note: 'Strictly skinless/boneless', qty: '900g' },
-                { id: 'm2', name: 'Firm Paneer block', note: '', qty: '500g' },
-                { id: 'm3', name: 'Large Eggs', note: '', qty: '1 Dozen' },
-                { id: 'm4', name: 'Greek Plain Yoghurt', note: 'For marinade base', qty: '1kg' }
+            "Meat & Dairy": [
+                { id: 'm1', name: 'Chicken Thigh Fillets', qty: '900g' },
+                { id: 'm2', name: 'Firm Paneer block', qty: '500g' },
+                { id: 'm3', name: 'Large Eggs', qty: '1 Dozen' },
+                { id: 'm4', name: 'Greek Yoghurt', qty: '1kg' }
             ],
-            veg: [
-                { id: 'v1', name: 'Broccoli florets', note: 'Fresh', qty: '750g', weight: 750 },
-                { id: 'v2', name: 'Green Beans', note: 'Fresh', qty: '750g', weight: 750 },
-                { id: 'v3', name: 'Red Capsicum', note: '', qty: '750g', weight: 750 },
-                { id: 'v4', name: 'Zucchini', note: '', qty: '750g', weight: 750 },
-                { id: 'v5', name: 'Cherry Tomatoes', note: '', qty: '500g', weight: 500 },
-                { id: 'v6', name: 'Baby Spinach', note: '', qty: '250g', weight: 250 }
+            "Vegetables": [
+                { id: 'v1', name: 'Broccoli', qty: '750g' },
+                { id: 'v2', name: 'Green Beans', qty: '750g' },
+                { id: 'v3', name: 'Red Capsicum', qty: '750g' },
+                { id: 'v4', name: 'Zucchini', qty: '750g' },
+                { id: 'v5', name: 'Cherry Tomatoes', qty: '500g' }
             ],
-            carbs: [
-                { id: 'c1', name: 'Wholemeal Toast Bread', note: 'Coles Brand', qty: '1 Loaf' },
-                { id: 'c2', name: 'Basmati Rice', note: '', qty: '1kg' },
-                { id: 'c3', name: 'Rolled Oats', note: '', qty: '1kg' },
-                { id: 'c4', name: 'Sweet Potatoes', note: '', qty: '1.5kg' },
-                { id: 'c5', name: 'Bananas', note: 'Medium', qty: '5x' }
-            ],
-            care: [
-                { id: 'p1', name: 'Avène Thermal Spring Water Spray', note: 'For skin hydration and soothing', qty: '1x' },
-                { id: 'p2', name: 'Dry Shampoo', note: 'For quick morning volume/oil control', qty: '1x' },
-                { id: 'p3', name: 'Daily Hair Shampoo & Conditioner', note: '', qty: '1 set' },
-                { id: 'p4', name: 'Natural Organic Hair Cream', note: 'Zero clay, wax, or crunch', qty: '1x' },
-                { id: 'p5', name: 'Alcohol-Free Mouthwash', note: '', qty: '1x' },
-                { id: 'p6', name: 'Vitamin C Serum', note: 'Morning brightening', qty: '1x' },
-                { id: 'p7', name: 'Niacinamide Serum', note: 'Barrier control and oil regulation', qty: '1x' },
-                { id: 'p8', name: 'SPF 50+ Face Sunscreen', note: 'Non-greasy fluid formula', qty: '1x' },
-                { id: 'p9', name: 'Hydrating Face Moisturiser', note: '', qty: '1x' },
-                { id: 'p10', name: 'Nourishing Body Wash', note: '', qty: '1x' },
-                { id: 'p11', name: 'Exfoliating Body Scrub', note: 'For deep skin renewal', qty: '1x' },
-                { id: 'p12', name: 'Sensitive Shaving Cream', note: '', qty: '1x' },
-                { id: 'p13', name: 'Gentle Foaming Face Wash', note: '', qty: '1x' },
-                { id: 'p14', name: 'Fluoride Toothpaste', note: '', qty: '1x' },
-                { id: 'p15', name: 'Oral-B Pro 100 Brush Heads', note: 'CrossAction or Precision Clean', qty: '1 pack' }
-            ],
-            homeCabinet: [
-                'Magnesium Powder', 'Tandoori Masala', 'Tikka Masala Spice', 'Spray Olive Oil', 'Extra Virgin Olive Oil'
-            ],
-            workCabinet: [
-                'Collagen Powder', 'Multivitamin Tablets', 'Omega Triple Tablets', 'Probiotic Tablets', 'Digital Scale', 'Cinnamon'
+            "Carbs & Care": [
+                { id: 'c1', name: 'Basmati Rice', qty: '1kg' },
+                { id: 'c2', name: 'Rolled Oats', qty: '1kg' },
+                { id: 'c3', name: 'Sweet Potatoes', qty: '1.5kg' },
+                { id: 'c4', name: 'Avène Spring Spray', qty: 'Restock' },
+                { id: 'c5', name: 'Oral-B Heads', qty: 'Restock' }
             ]
         };
 
-        let checkedCount = 0;
-        const totalItems = groceryData.meat.length + groceryData.veg.length + groceryData.carbs.length + groceryData.care.length;
+        let checkedState = JSON.parse(localStorage.getItem('groceryState')) || [];
+        let totalItems = 0;
 
         function initApp() {
-            renderList('meatList', groceryData.meat);
-            renderList('vegList', groceryData.veg);
-            renderList('carbList', groceryData.carbs);
-            renderList('careList', groceryData.care);
-            renderCabinet('homeCabinet', groceryData.homeCabinet);
-            renderCabinet('workCabinet', groceryData.workCabinet);
-            initChart();
+            const container = document.getElementById('listContainer');
+            container.innerHTML = '';
+            totalItems = 0;
+
+            for (const [category, items] of Object.entries(groceryData)) {
+                let html = `<div class="glass-card rounded-2xl p-5 mb-4"><h2 class="font-bold text-emerald-400 mb-3">${category}</h2><div class="space-y-3">`;
+                
+                items.forEach(item => {
+                    totalItems++;
+                    const isChecked = checkedState.includes(item.id) ? 'checked' : '';
+                    const completedClass = isChecked ? 'completed' : '';
+                    
+                    html += `
+                        <div class="item-row flex items-center gap-4 ${completedClass}" id="row-${item.id}">
+                            <input type="checkbox" id="${item.id}" class="checkbox-custom flex-shrink-0" ${isChecked} onchange="toggleItem('${item.id}', this.checked)">
+                            <label for="${item.id}" class="flex-1 cursor-pointer text-sm font-medium flex justify-between">
+                                ${item.name}
+                                <span class="text-stone-500">${item.qty}</span>
+                            </label>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+                container.innerHTML += html;
+            }
             updateProgress();
         }
 
-        function renderList(containerId, items) {
-            const container = document.getElementById(containerId);
-            items.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'item-row flex items-center gap-4 p-3 rounded-lg transition-colors cursor-pointer border-b border-stone-50 last:border-0';
-                div.innerHTML = `
-                    <input type="checkbox" id="${item.id}" class="checkbox-custom w-5 h-5 accent-emerald-600 cursor-pointer" onchange="updateProgress()">
-                    <label for="${item.id}" class="flex-1 cursor-pointer">
-                        <div class="font-medium text-stone-800">${item.name}</div>
-                        <div class="text-xs text-stone-500">${item.note}</div>
-                    </label>
-                    <div class="text-sm font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">${item.qty}</div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function renderCabinet(containerId, items) {
-            const container = document.getElementById(containerId);
-            items.forEach((item, idx) => {
-                const div = document.createElement('div');
-                div.className = 'flex items-center gap-3 opacity-80 hover:opacity-100';
-                div.innerHTML = `
-                    <input type="checkbox" id="${containerId}-${idx}" class="w-4 h-4 accent-amber-500 rounded">
-                    <label for="${containerId}-${idx}" class="cursor-pointer">${item}</label>
-                `;
-                container.appendChild(div);
-            });
+        function toggleItem(id, isChecked) {
+            if (navigator.vibrate) navigator.vibrate(15);
+            const row = document.getElementById(`row-${id}`);
+            if (isChecked) {
+                checkedState.push(id);
+                row.classList.add('completed');
+            } else {
+                checkedState = checkedState.filter(i => i !== id);
+                row.classList.remove('completed');
+            }
+            localStorage.setItem('groceryState', JSON.stringify(checkedState));
+            updateProgress();
         }
 
         function updateProgress() {
-            const checkboxes = document.querySelectorAll('.checkbox-custom');
-            const checked = Array.from(checkboxes).filter(c => c.checked).length;
-            const percentage = Math.round((checked / totalItems) * 100);
-            
-            const bar = document.getElementById('progressBar');
-            const text = document.getElementById('progressText');
-            
-            bar.style.width = percentage + '%';
-            text.innerText = percentage + '% COMPLETE';
-            
-            if (percentage === 100) {
-                text.innerText = "LIST COMPLETE! ✅";
-                bar.classList.replace('bg-emerald-600', 'bg-green-500');
-            } else {
-                bar.classList.replace('bg-green-500', 'bg-emerald-600');
+            const percentage = Math.round((checkedState.length / totalItems) * 100);
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+        }
+
+        function clearRun() {
+            if(confirm("Clear list for next week?")) {
+                checkedState = [];
+                localStorage.setItem('groceryState', JSON.stringify(checkedState));
+                initApp();
             }
-        }
-
-        function resetList() {
-            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-            updateProgress();
-        }
-
-        function initChart() {
-            const ctx = document.getElementById('fiberChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: groceryData.veg.map(v => v.name),
-                    datasets: [{
-                        data: groceryData.veg.map(v => v.weight),
-                        backgroundColor: [
-                            '#065f46', '#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0'
-                        ],
-                        borderWidth: 0,
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                boxWidth: 12,
-                                padding: 15,
-                                font: { size: 10, family: 'Inter' },
-                                color: '#064e3b'
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: (context) => ` ${context.label}: ${context.raw}g`
-                            }
-                        }
-                    },
-                    cutout: '70%'
-                }
-            });
         }
 
         document.addEventListener('DOMContentLoaded', initApp);
