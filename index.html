@@ -2,49 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#059669">
+    <link rel="manifest" href="manifest.json">
     <title>Life Protocol Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #faf9f6; }
-        .heading-font { font-family: 'Playfair Display', serif; }
-        .app-card { transition: transform 0.2s, box-shadow 0.2s; }
-        .app-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0c0a09; color: #fafaf9; overflow: hidden; }
+        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-card:active { transform: scale(0.96); }
+        .animate-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex flex-col items-center justify-center p-6 relative">
+    
+    <!-- Ambient Background Gradients -->
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-emerald-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] pointer-events-none"></div>
 
-    <main class="w-full max-w-md space-y-6">
-        <div class="text-center mb-10">
-            <h1 class="heading-font text-4xl text-emerald-900 font-semibold mb-2">Protocol Hub</h1>
-            <p class="text-stone-500 text-sm">Select your dashboard</p>
+    <main class="w-full max-w-md space-y-6 z-10">
+        <div class="text-left mb-10 animate-up">
+            <h1 class="text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-200 mb-2">Protocol</h1>
+            <p class="text-stone-400 text-sm font-medium uppercase tracking-widest" id="clock">Loading System...</p>
         </div>
 
-        <a href="daily_routine_dashboard.html" class="app-card block bg-white rounded-2xl p-6 border border-stone-200 shadow-sm flex items-center gap-4 group cursor-pointer">
-            <div class="bg-blue-50 text-blue-600 p-4 rounded-xl text-2xl group-hover:scale-110 transition-transform">⏱️</div>
+        <a href="daily_routine_dashboard.html" class="glass-card rounded-3xl p-6 flex items-center gap-5 group cursor-pointer animate-up delay-1 block">
+            <div class="bg-blue-500/20 text-blue-400 p-4 rounded-2xl text-2xl">⏱️</div>
             <div>
-                <h2 class="text-lg font-bold text-stone-800 mb-1">Daily Routine</h2>
-                <p class="text-sm text-stone-500">Track your daily protocol & schedule</p>
+                <h2 class="text-xl font-bold text-stone-100 mb-1">Daily Routine</h2>
+                <p class="text-xs text-stone-400">Track daily protocol & schedule</p>
             </div>
         </a>
 
-        <a href="grocery_planner.html" class="app-card block bg-white rounded-2xl p-6 border border-stone-200 shadow-sm flex items-center gap-4 group cursor-pointer">
-            <div class="bg-emerald-50 text-emerald-600 p-4 rounded-xl text-2xl group-hover:scale-110 transition-transform">🛒</div>
+        <a href="grocery_planner.html" class="glass-card rounded-3xl p-6 flex items-center gap-5 group cursor-pointer animate-up delay-2 block">
+            <div class="bg-emerald-500/20 text-emerald-400 p-4 rounded-2xl text-2xl">🛒</div>
             <div>
-                <h2 class="text-lg font-bold text-stone-800 mb-1">Grocery Planner</h2>
-                <p class="text-sm text-stone-500">Weekly Coles list & cabinet check</p>
+                <h2 class="text-xl font-bold text-stone-100 mb-1">Grocery Planner</h2>
+                <p class="text-xs text-stone-400">Weekly Coles list & inventory</p>
             </div>
         </a>
 
-        <a href="meal_prep_dashboard.html" class="app-card block bg-white rounded-2xl p-6 border border-stone-200 shadow-sm flex items-center gap-4 group cursor-pointer">
-            <div class="bg-orange-50 text-orange-600 p-4 rounded-xl text-2xl group-hover:scale-110 transition-transform">🧑‍🍳</div>
+        <a href="meal_prep_dashboard.html" class="glass-card rounded-3xl p-6 flex items-center gap-5 group cursor-pointer animate-up delay-3 block">
+            <div class="bg-orange-500/20 text-orange-400 p-4 rounded-2xl text-2xl">🧑‍🍳</div>
             <div>
-                <h2 class="text-lg font-bold text-stone-800 mb-1">Meal Prep</h2>
-                <p class="text-sm text-stone-500">Weekend marination & packing guide</p>
+                <h2 class="text-xl font-bold text-stone-100 mb-1">Meal Prep</h2>
+                <p class="text-xs text-stone-400">Weekend marination & packing</p>
             </div>
         </a>
     </main>
 
+    <script>
+        // Service Worker Registration for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+        
+        // Live Clock
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' • ' + new Date().toLocaleDateString('en-AU', { weekday: 'short', month: 'short', day: 'numeric' });
+        }, 1000);
+    </script>
 </body>
 </html>
