@@ -2,405 +2,126 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meal Prep Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Meal Prep</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #faf9f6; /* Soft off-white */
-            color: #3e3c3a;
-        }
-
-        .heading-font {
-            font-family: 'Playfair Display', serif;
-        }
-
-        .bento-box {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 0.5rem;
-            height: 240px;
-        }
-
-        .bento-fiber {
-            grid-column: 1 / 2;
-            grid-row: 1 / 3;
-            background-color: #d1fae5; /* green-100 */
-            border: 2px solid #34d399; /* green-400 */
-        }
-
-        .bento-protein {
-            grid-column: 2 / 3;
-            grid-row: 1 / 2;
-            background-color: #ffedd5; /* orange-100 */
-            border: 2px solid #fb923c; /* orange-400 */
-        }
-
-        .bento-carbs {
-            grid-column: 2 / 3;
-            grid-row: 2 / 3;
-            background-color: #fef08a; /* yellow-200 */
-            border: 2px solid #facc15; /* yellow-400 */
-        }
-
-        .bento-section {
-            border-radius: 0.75rem;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            transition: transform 0.2s ease;
-        }
-
-        .bento-section:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .checkbox-custom:checked + label {
-            text-decoration: line-through;
-            color: #9ca3af;
-            opacity: 0.7;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        }
-
-        /* Nav tab styling */
-        .tab-btn {
-            position: relative;
-        }
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background-color: #059669; /* emerald-600 */
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0c0a09; color: #fafaf9; }
+        .glass-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .bento { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 4px; height: 180px; }
+        .bento-box { border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 8px; }
+        .checkbox-custom { appearance: none; width: 1.25rem; height: 1.25rem; border: 2px solid #57534e; border-radius: 4px; outline: none; cursor: pointer; position: relative; }
+        .checkbox-custom:checked { background-color: #10b981; border-color: #10b981; }
+        .checkbox-custom:checked::after { content: '✓'; position: absolute; color: white; font-size: 0.8rem; font-weight: bold; top: 50%; left: 50%; transform: translate(-50%, -50%); }
     </style>
 </head>
-<body class="min-h-screen pb-16">
+<body class="min-h-screen pb-24">
 
-    <header class="bg-white border-b border-stone-200 sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-4 py-4">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="text-center md:text-left">
-                    <h1 class="heading-font text-3xl text-emerald-900 font-semibold">Meal Prep Dashboard</h1>
-                    <p class="text-stone-500 text-sm">Saturday Marinate • Sunday Cook • 5 Portions</p>
-                </div>
-                <div class="w-full md:w-72 bg-stone-100 rounded-full h-3 overflow-hidden border border-stone-200 relative">
-                    <div id="overallProgress" class="bg-emerald-500 h-full transition-all duration-500 w-0"></div>
-                </div>
-            </div>
-            
-            <!-- Navigation Tabs -->
-            <nav class="flex overflow-x-auto gap-6 mt-6 pb-1 no-scrollbar">
-                <button onclick="switchTab('saturday')" id="tab-saturday" class="tab-btn active text-stone-600 font-medium pb-2 whitespace-nowrap hover:text-emerald-700 transition-colors">1. Sat Marination</button>
-                <button onclick="switchTab('sunday')" id="tab-sunday" class="tab-btn text-stone-600 font-medium pb-2 whitespace-nowrap hover:text-emerald-700 transition-colors">2. Sun Assembly</button>
-                <button onclick="switchTab('daily')" id="tab-daily" class="tab-btn text-stone-600 font-medium pb-2 whitespace-nowrap hover:text-emerald-700 transition-colors">3. Daily Extras</button>
-                <button onclick="switchTab('weekend')" id="tab-weekend" class="tab-btn text-stone-600 font-medium pb-2 whitespace-nowrap hover:text-emerald-700 transition-colors">4. Weekend Mode</button>
-            </nav>
+    <header class="glass-card sticky top-0 z-50 backdrop-blur-xl border-b-0">
+        <div class="max-w-md mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl" onclick="navigator.vibrate(15)">🏠</a>
+            <h1 class="text-xl font-bold tracking-tight">Meal Prep</h1>
+            <button onclick="resetPrep()" class="text-xs text-stone-400 active:scale-95 transition-transform">Reset</button>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-4 pt-8">
+    <main class="max-w-md mx-auto px-6 pt-6 space-y-8">
         
-        <!-- VIEW 1: SATURDAY MARINATION -->
-        <section id="view-saturday" class="block animate-fade-in">
-            <div class="mb-8">
-                <h2 class="heading-font text-2xl text-stone-800 mb-2">The Saturday Night Protocol</h2>
-                <p class="text-stone-600">Execute this before bed. Two containers, minimal effort.</p>
+        <!-- Saturday Marination -->
+        <section>
+            <h2 class="text-lg font-bold text-emerald-400 mb-4">1. Sat Night Marination</h2>
+            <div class="glass-card rounded-2xl p-5 space-y-4" id="prepList">
+                <!-- Injected via JS -->
             </div>
+        </section>
 
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Meat Prep -->
-                <div class="glass-card rounded-2xl p-6">
-                    <div class="flex items-center gap-3 mb-6 border-b border-stone-100 pb-4">
-                        <div class="bg-orange-100 p-3 rounded-full text-xl">🍗</div>
-                        <h3 class="text-lg font-bold text-stone-800">Container 1: Meat</h3>
+        <!-- Sunday Bento Boxes -->
+        <section>
+            <h2 class="text-lg font-bold text-blue-400 mb-4">2. Sun Assembly (x5)</h2>
+            
+            <div class="glass-card rounded-2xl p-4 mb-4">
+                <div class="flex justify-between mb-3"><h3 class="font-bold">💼 Lunch Box</h3><span class="text-xs bg-stone-800 px-2 py-1 rounded">1L</span></div>
+                <div class="bento">
+                    <div class="bento-box bg-emerald-500/20 text-emerald-300" style="grid-column: 1 / 2; grid-row: 1 / 3;">
+                        <span class="text-[10px] uppercase font-bold opacity-60">Fiber</span>
+                        <span class="font-bold text-lg">150g</span><span class="text-xs">Broccoli</span><span class="my-1">+</span>
+                        <span class="font-bold text-lg">150g</span><span class="text-xs">Beans</span>
                     </div>
-                    <div class="space-y-4" id="satMeatTasks">
-                        <!-- Tasks generated by JS -->
+                    <div class="bento-box bg-orange-500/20 text-orange-300" style="grid-column: 2 / 3; grid-row: 1 / 2;">
+                        <span class="text-[10px] uppercase font-bold opacity-60">Protein</span>
+                        <span class="font-bold text-lg">180g</span><span class="text-xs">Tandoori</span>
+                    </div>
+                    <div class="bento-box bg-yellow-500/20 text-yellow-300" style="grid-column: 2 / 3; grid-row: 2 / 3;">
+                        <span class="text-[10px] uppercase font-bold opacity-60">Carbs</span>
+                        <span class="font-bold text-lg">180g</span><span class="text-xs">Rice</span>
                     </div>
                 </div>
+            </div>
 
-                <!-- Veg Prep -->
-                <div class="glass-card rounded-2xl p-6">
-                    <div class="flex items-center gap-3 mb-6 border-b border-stone-100 pb-4">
-                        <div class="bg-emerald-100 p-3 rounded-full text-xl">🧀</div>
-                        <h3 class="text-lg font-bold text-stone-800">Container 2: Paneer</h3>
+            <div class="glass-card rounded-2xl p-4">
+                <div class="flex justify-between mb-3"><h3 class="font-bold">🏠 Dinner Box</h3><span class="text-xs bg-stone-800 px-2 py-1 rounded">1L</span></div>
+                <div class="bento">
+                    <div class="bento-box bg-emerald-500/20 text-emerald-300" style="grid-column: 1 / 2; grid-row: 1 / 3;">
+                        <span class="text-[10px] uppercase font-bold opacity-60">Fiber</span>
+                        <span class="font-bold text-lg">150g</span><span class="text-xs">Capsicum</span><span class="my-1">+</span>
+                        <span class="font-bold text-lg">150g</span><span class="text-xs">Zucchini</span>
                     </div>
-                    <div class="space-y-4" id="satVegTasks">
-                        <!-- Tasks generated by JS -->
+                    <div class="bento-box bg-red-500/20 text-red-300" style="grid-column: 2 / 3; grid-row: 1 / 2;">
+                        <span class="text-[10px] uppercase font-bold opacity-60">Protein</span>
+                        <span class="font-bold text-lg">100g</span><span class="text-xs">Paneer</span>
+                    </div>
+                    <div class="bento-box bg-yellow-500/20 text-yellow-300" style="grid-column: 2 / 3; grid-row: 2 / 3;">
+                        <span class="text-[10px] uppercase font-bold opacity-60">Carbs</span>
+                        <span class="font-bold text-lg">200g</span><span class="text-xs">Sweet Potato</span>
                     </div>
                 </div>
             </div>
         </section>
-
-        <!-- VIEW 2: SUNDAY COOKING & PACKING -->
-        <section id="view-sunday" class="hidden animate-fade-in">
-            <div class="mb-8 flex justify-between items-end">
-                <div>
-                    <h2 class="heading-font text-2xl text-stone-800 mb-2">Sunday Cooking & Packing</h2>
-                    <p class="text-stone-600">Prepare these visual container layouts x5 times.</p>
-                </div>
-                <div class="text-center bg-stone-800 text-white px-4 py-2 rounded-lg">
-                    <span class="block text-xs uppercase tracking-wider text-stone-400">Total Yield</span>
-                    <span class="font-bold text-lg">5 Days</span>
-                </div>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8">
-                
-                <!-- Lunch Box Container -->
-                <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-100">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-lg flex items-center gap-2"><span class="text-xl">💼</span> Lunch Box</h3>
-                        <span class="text-xs font-semibold bg-stone-100 text-stone-600 px-2 py-1 rounded">1L CAPACITY</span>
-                    </div>
-                    
-                    <div class="bento-box shadow-inner bg-stone-50 p-2 rounded-xl">
-                        <div class="bento-section bento-fiber text-emerald-900">
-                            <span class="text-xs uppercase font-bold tracking-widest opacity-60 mb-2">Fiber</span>
-                            <span class="font-bold text-lg">150g</span> <span class="text-sm">Broccoli</span>
-                            <span class="my-1">+</span>
-                            <span class="font-bold text-lg">150g</span> <span class="text-sm">Green Beans</span>
-                        </div>
-                        <div class="bento-section bento-protein text-orange-900">
-                            <span class="text-xs uppercase font-bold tracking-widest opacity-60 mb-1">Protein</span>
-                            <span class="font-bold text-lg">180g</span> 
-                            <span class="text-sm leading-tight mt-1">Tandoori Chicken</span>
-                        </div>
-                        <div class="bento-section bento-carbs text-yellow-900">
-                            <span class="text-xs uppercase font-bold tracking-widest opacity-60 mb-1">Carbs</span>
-                            <span class="font-bold text-lg">180g</span> 
-                            <span class="text-sm leading-tight mt-1">Basmati Rice</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dinner Box Container -->
-                <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-100">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-lg flex items-center gap-2"><span class="text-xl">🏠</span> Dinner Box</h3>
-                        <span class="text-xs font-semibold bg-stone-100 text-stone-600 px-2 py-1 rounded">1L CAPACITY</span>
-                    </div>
-                    
-                    <div class="bento-box shadow-inner bg-stone-50 p-2 rounded-xl">
-                        <div class="bento-section bento-fiber text-emerald-900">
-                            <span class="text-xs uppercase font-bold tracking-widest opacity-60 mb-2">Fiber</span>
-                            <span class="font-bold text-lg">150g</span> <span class="text-sm">Capsicum</span>
-                            <span class="my-1">+</span>
-                            <span class="font-bold text-lg">150g</span> <span class="text-sm">Zucchini</span>
-                        </div>
-                        <div class="bento-section bento-protein text-orange-900" style="background-color: #fee2e2; border-color: #f87171;">
-                            <span class="text-xs uppercase font-bold tracking-widest opacity-60 mb-1">Protein</span>
-                            <span class="font-bold text-lg">100g</span> 
-                            <span class="text-sm leading-tight mt-1">Tikka Paneer</span>
-                        </div>
-                        <div class="bento-section bento-carbs text-yellow-900" style="background-color: #ffedd5; border-color: #fdba74;">
-                            <span class="text-xs uppercase font-bold tracking-widest opacity-60 mb-1">Carbs</span>
-                            <span class="font-bold text-lg">200g</span> 
-                            <span class="text-sm leading-tight mt-1">Roasted Sweet Potato</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- VIEW 3: DAILY ROUTINE -->
-        <section id="view-daily" class="hidden animate-fade-in">
-             <div class="mb-8">
-                <h2 class="heading-font text-2xl text-stone-800 mb-2">Daily Breakfast & Snacks</h2>
-                <p class="text-stone-600">Fresh components assembled on the day to maintain quality.</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Breakfast Card -->
-                <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 rounded-2xl overflow-hidden relative">
-                    <div class="absolute top-4 right-4 text-3xl opacity-50">🍳</div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-amber-900 mb-1">Breakfast Box</h3>
-                        <p class="text-xs font-semibold text-amber-700 tracking-wider mb-4 uppercase">750ml Container • Eat at 9:15 AM</p>
-                        
-                        <ul class="space-y-3 text-sm text-stone-800">
-                            <li class="flex gap-3"><span class="text-amber-500 font-bold">1.</span> <span>Spray pan with <b>5g olive oil</b>.</span></li>
-                            <li class="flex gap-3"><span class="text-amber-500 font-bold">2.</span> <span>Fry <b>2 Large Eggs</b> completely through.</span></li>
-                            <li class="flex gap-3"><span class="text-amber-500 font-bold">3.</span> <span>Toss <b>100g cherry tomatoes</b> and <b>50g baby spinach</b> in pan until wilted.</span></li>
-                            <li class="flex gap-3"><span class="text-amber-500 font-bold">4.</span> <span>Pack alongside <b>2 slices wholemeal toast</b>.</span></li>
-                        </ul>
-                    </div>
-                    <div class="bg-amber-100/50 p-4 text-xs text-amber-800 font-medium border-t border-amber-100 text-center">
-                        💡 Cook fresh daily or the night before. Eat cold or lightly warmed.
-                    </div>
-                </div>
-
-                <!-- Snack Card -->
-                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl overflow-hidden relative">
-                    <div class="absolute top-4 right-4 text-3xl opacity-50">☕</div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-blue-900 mb-1">Afternoon Snack</h3>
-                        <p class="text-xs font-semibold text-blue-700 tracking-wider mb-4 uppercase">750ml Container • Assemble at Work</p>
-                        
-                        <ul class="space-y-3 text-sm text-stone-800">
-                            <li class="flex gap-3"><span class="text-blue-500 font-bold">1.</span> <span>Weigh <b>80g raw rolled oats</b> into container.</span></li>
-                            <li class="flex gap-3"><span class="text-blue-500 font-bold">2.</span> <span>Add boiling water from kettle. Let sit for 3 mins.</span></li>
-                            <li class="flex gap-3"><span class="text-blue-500 font-bold">3.</span> <span>Stir in exactly <b>15g Collagen Powder</b> & cinnamon.</span></li>
-                            <li class="flex gap-3"><span class="text-blue-500 font-bold">4.</span> <span>Top with <b>1 sliced banana</b> (100g).</span></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIEW 4: WEEKEND STRATEGY -->
-        <section id="view-weekend" class="hidden animate-fade-in">
-            <div class="max-w-2xl mx-auto bg-stone-800 text-stone-100 rounded-3xl p-8 shadow-xl relative overflow-hidden">
-                <!-- Decorative background elements -->
-                <div class="absolute -top-10 -right-10 w-40 h-40 bg-stone-700 rounded-full opacity-50"></div>
-                <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-stone-700 rounded-full opacity-50"></div>
-                
-                <div class="relative z-10">
-                    <div class="text-center mb-8">
-                        <span class="text-4xl mb-4 block">🛋️</span>
-                        <h2 class="heading-font text-3xl mb-2 text-white">The Weekend Protocol</h2>
-                        <p class="text-stone-400 font-medium text-sm tracking-wide uppercase">Zero-Effort Strategy</p>
-                    </div>
-
-                    <p class="text-stone-300 text-center mb-8 italic">Keep your cooking zero-effort on weekends so you can stay laid back while hitting exact macro splits.</p>
-                    
-                    <div class="space-y-4">
-                        <div class="bg-stone-700/50 p-4 rounded-xl border border-stone-600 flex items-start gap-4">
-                            <div class="bg-stone-800 p-2 rounded-lg mt-1">🥪</div>
-                            <div>
-                                <h4 class="font-bold text-white mb-1">1. The Office Press Hack</h4>
-                                <p class="text-sm text-stone-300">Use your work sandwich press at home, lined with greaseproof baking paper. Grill <strong class="text-emerald-400">180g plain chicken thighs</strong> or <strong class="text-emerald-400">100g paneer</strong> fresh.</p>
-                            </div>
-                        </div>
-
-                        <div class="bg-stone-700/50 p-4 rounded-xl border border-stone-600 flex items-start gap-4">
-                            <div class="bg-stone-800 p-2 rounded-lg mt-1">⏱️</div>
-                            <div>
-                                <h4 class="font-bold text-white mb-1">2. Microwave Sides</h4>
-                                <p class="text-sm text-stone-300">Pair your protein with a quick microwave-steamed <strong class="text-emerald-400">steam-bag of broccoli</strong> and <strong class="text-emerald-400">150g of pre-packaged microwave brown rice</strong>.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
     </main>
 
     <script>
-        // Data and State
-        const prepTasks = {
-            meat: [
-                { id: 'm1', text: 'Cut 900g of chicken thigh fillets into bite-sized pieces.' },
-                { id: 'm2', text: 'In a bowl, add 200g Greek yoghurt.' },
-                { id: 'm3', text: 'Add 3 tablespoons of tandoori masala.' },
-                { id: 'm4', text: 'Add 1 tablespoon of minced ginger & garlic.' },
-                { id: 'm5', text: 'Toss chicken to coat completely. Cover & refrigerate overnight.' }
-            ],
-            veg: [
-                { id: 'v1', text: 'Cut 500g of paneer into cubes.' },
-                { id: 'v2', text: 'Mix with 100g of Greek yoghurt.' },
-                { id: 'v3', text: 'Add tikka masala spice.' },
-                { id: 'v4', text: 'Coat gently. Cover & refrigerate overnight.' }
-            ]
-        };
+        const prepSteps = [
+            { id: 'p1', label: 'Dice 900g chicken' },
+            { id: 'p2', label: 'Mix 200g yoghurt, tandoori masala, ginger/garlic' },
+            { id: 'p3', label: 'Coat chicken & refrigerate' },
+            { id: 'p4', label: 'Cube 500g paneer' },
+            { id: 'p5', label: 'Mix 100g yoghurt, tikka spice' },
+            { id: 'p6', label: 'Coat paneer gently & refrigerate' }
+        ];
 
-        const totalTasks = prepTasks.meat.length + prepTasks.veg.length;
-        let checkedTasks = new Set();
+        let prepState = JSON.parse(localStorage.getItem('prepState')) || [];
 
-        // Initialization
-        function initDashboard() {
-            renderChecklist('satMeatTasks', prepTasks.meat);
-            renderChecklist('satVegTasks', prepTasks.veg);
-            updateProgressBar();
-        }
-
-        // Render checklist items
-        function renderChecklist(containerId, tasks) {
-            const container = document.getElementById(containerId);
-            tasks.forEach(task => {
-                const label = document.createElement('label');
-                label.className = 'flex items-start gap-3 cursor-pointer group';
-                
-                label.innerHTML = `
-                    <div class="relative flex items-start pt-1">
-                        <input type="checkbox" id="${task.id}" class="checkbox-custom w-5 h-5 accent-emerald-600 border-stone-300 rounded cursor-pointer transition-all" onchange="toggleTask('${task.id}', this.checked)">
+        function initApp() {
+            const container = document.getElementById('prepList');
+            container.innerHTML = '';
+            
+            prepSteps.forEach(step => {
+                const isChecked = prepState.includes(step.id) ? 'checked' : '';
+                container.innerHTML += `
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="${step.id}" class="checkbox-custom flex-shrink-0" ${isChecked} onchange="togglePrep('${step.id}', this.checked)">
+                        <label for="${step.id}" class="text-sm font-medium ${isChecked ? 'line-through opacity-50' : ''}">${step.label}</label>
                     </div>
-                    <span class="text-sm text-stone-700 leading-relaxed group-hover:text-stone-900 transition-colors">${task.text}</span>
                 `;
-                container.appendChild(label);
             });
         }
 
-        // Progress Tracking
-        function toggleTask(taskId, isChecked) {
-            if (isChecked) {
-                checkedTasks.add(taskId);
-            } else {
-                checkedTasks.delete(taskId);
-            }
-            updateProgressBar();
+        function togglePrep(id, isChecked) {
+            if (navigator.vibrate) navigator.vibrate(15);
+            if (isChecked) prepState.push(id);
+            else prepState = prepState.filter(i => i !== id);
+            localStorage.setItem('prepState', JSON.stringify(prepState));
+            initApp();
         }
 
-        function updateProgressBar() {
-            const percentage = Math.round((checkedTasks.size / totalTasks) * 100);
-            const bar = document.getElementById('overallProgress');
-            
-            bar.style.width = percentage + '%';
-            
-            if (percentage === 100) {
-                bar.classList.replace('bg-emerald-500', 'bg-green-400');
-            } else {
-                bar.classList.replace('bg-green-400', 'bg-emerald-500');
-            }
+        function resetPrep() {
+            prepState = [];
+            localStorage.setItem('prepState', JSON.stringify(prepState));
+            initApp();
         }
 
-        // Tab Navigation Logic
-        function switchTab(tabName) {
-            // Hide all views
-            ['saturday', 'sunday', 'daily', 'weekend'].forEach(name => {
-                document.getElementById(`view-${name}`).classList.add('hidden');
-                document.getElementById(`tab-${name}`).classList.remove('active', 'text-emerald-700');
-                document.getElementById(`tab-${name}`).classList.add('text-stone-600');
-            });
-
-            // Show selected view
-            const view = document.getElementById(`view-${tabName}`);
-            view.classList.remove('hidden');
-            
-            // Add a small animation effect
-            view.style.opacity = '0';
-            setTimeout(() => {
-                view.style.transition = 'opacity 0.3s ease';
-                view.style.opacity = '1';
-            }, 10);
-
-            // Update active tab styles
-            const activeTab = document.getElementById(`tab-${tabName}`);
-            activeTab.classList.add('active', 'text-emerald-700');
-            activeTab.classList.remove('text-stone-600');
-        }
-
-        // Run setup on load
-        document.addEventListener('DOMContentLoaded', initDashboard);
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
