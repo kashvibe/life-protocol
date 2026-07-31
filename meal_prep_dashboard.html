@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Meal Prep</title>
+    <title>Budget Meal Prep</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
@@ -21,59 +21,49 @@
     <header class="glass-card sticky top-0 z-50 backdrop-blur-xl border-b-0">
         <div class="max-w-md mx-auto px-6 py-4 flex justify-between items-center">
             <a href="index.html" class="text-2xl" onclick="navigator.vibrate(15)">🏠</a>
-            <h1 class="text-xl font-bold tracking-tight">Meal Prep</h1>
+            <h1 class="text-xl font-bold tracking-tight">Bulk Meal Prep</h1>
             <button onclick="resetPrep()" class="text-xs text-stone-400 active:scale-95 transition-transform">Reset</button>
         </div>
     </header>
 
     <main class="max-w-md mx-auto px-6 pt-6 space-y-8">
         
-        <!-- Saturday Marination -->
+        <!-- Sunday Workflow -->
         <section>
-            <h2 class="text-lg font-bold text-emerald-400 mb-4">1. Sat Night Marination</h2>
+            <h2 class="text-lg font-bold text-emerald-400 mb-4">1. Sunday Morning 90-Min Block</h2>
             <div class="glass-card rounded-2xl p-5 space-y-4" id="prepList">
                 <!-- Injected via JS -->
             </div>
         </section>
 
-        <!-- Sunday Bento Boxes -->
+        <!-- Container Architecture -->
         <section>
-            <h2 class="text-lg font-bold text-blue-400 mb-4">2. Sun Assembly (x5)</h2>
+            <h2 class="text-lg font-bold text-blue-400 mb-4">2. Final Yield Assembly (x5)</h2>
             
-            <div class="glass-card rounded-2xl p-4 mb-4">
-                <div class="flex justify-between mb-3"><h3 class="font-bold">💼 Lunch Box</h3><span class="text-xs bg-stone-800 px-2 py-1 rounded">1L</span></div>
+            <div class="glass-card rounded-2xl p-4 mb-4 border border-blue-500/30">
+                <div class="flex justify-between mb-3"><h3 class="font-bold">💼 Lunch Box</h3><span class="text-xs bg-stone-800 px-2 py-1 rounded text-stone-300">1L</span></div>
                 <div class="bento">
-                    <div class="bento-box bg-emerald-500/20 text-emerald-300" style="grid-column: 1 / 2; grid-row: 1 / 3;">
-                        <span class="text-[10px] uppercase font-bold opacity-60">Fiber</span>
-                        <span class="font-bold text-lg">150g</span><span class="text-xs">Broccoli</span><span class="my-1">+</span>
-                        <span class="font-bold text-lg">150g</span><span class="text-xs">Beans</span>
+                    <div class="bento-box bg-orange-500/20 text-orange-300" style="grid-column: 1 / 3; grid-row: 1 / 2;">
+                        <span class="text-[10px] uppercase font-bold opacity-60">Protein & Fiber</span>
+                        <span class="font-bold text-lg">100g (Dry Wgt)</span><span class="text-xs">Spiced Red Split Lentil Dahl</span>
                     </div>
-                    <div class="bento-box bg-orange-500/20 text-orange-300" style="grid-column: 2 / 3; grid-row: 1 / 2;">
-                        <span class="text-[10px] uppercase font-bold opacity-60">Protein</span>
-                        <span class="font-bold text-lg">180g</span><span class="text-xs">Tandoori</span>
-                    </div>
-                    <div class="bento-box bg-yellow-500/20 text-yellow-300" style="grid-column: 2 / 3; grid-row: 2 / 3;">
+                    <div class="bento-box bg-yellow-500/20 text-yellow-300" style="grid-column: 1 / 3; grid-row: 2 / 3;">
                         <span class="text-[10px] uppercase font-bold opacity-60">Carbs</span>
-                        <span class="font-bold text-lg">180g</span><span class="text-xs">Rice</span>
+                        <span class="font-bold text-lg">180g (Dry Wgt)</span><span class="text-xs">Long Grain White Rice</span>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-card rounded-2xl p-4">
-                <div class="flex justify-between mb-3"><h3 class="font-bold">🏠 Dinner Box</h3><span class="text-xs bg-stone-800 px-2 py-1 rounded">1L</span></div>
+            <div class="glass-card rounded-2xl p-4 border border-emerald-500/30">
+                <div class="flex justify-between mb-3"><h3 class="font-bold">🏠 Dinner Box</h3><span class="text-xs bg-stone-800 px-2 py-1 rounded text-stone-300">1L</span></div>
                 <div class="bento">
-                    <div class="bento-box bg-emerald-500/20 text-emerald-300" style="grid-column: 1 / 2; grid-row: 1 / 3;">
-                        <span class="text-[10px] uppercase font-bold opacity-60">Fiber</span>
-                        <span class="font-bold text-lg">150g</span><span class="text-xs">Capsicum</span><span class="my-1">+</span>
-                        <span class="font-bold text-lg">150g</span><span class="text-xs">Zucchini</span>
-                    </div>
-                    <div class="bento-box bg-red-500/20 text-red-300" style="grid-column: 2 / 3; grid-row: 1 / 2;">
+                    <div class="bento-box bg-red-500/20 text-red-300" style="grid-column: 1 / 2; grid-row: 1 / 3;">
                         <span class="text-[10px] uppercase font-bold opacity-60">Protein</span>
-                        <span class="font-bold text-lg">100g</span><span class="text-xs">Paneer</span>
+                        <span class="font-bold text-lg">200g</span><span class="text-xs leading-tight">Diced Chicken Breast</span>
                     </div>
-                    <div class="bento-box bg-yellow-500/20 text-yellow-300" style="grid-column: 2 / 3; grid-row: 2 / 3;">
-                        <span class="text-[10px] uppercase font-bold opacity-60">Carbs</span>
-                        <span class="font-bold text-lg">200g</span><span class="text-xs">Sweet Potato</span>
+                    <div class="bento-box bg-emerald-500/20 text-emerald-300" style="grid-column: 2 / 3; grid-row: 1 / 3;">
+                        <span class="text-[10px] uppercase font-bold opacity-60">Volume Fiber</span>
+                        <span class="font-bold text-lg">400g</span><span class="text-xs leading-tight">Frozen Mixed Veg (Stir-Fried)</span>
                     </div>
                 </div>
             </div>
@@ -82,15 +72,17 @@
 
     <script>
         const prepSteps = [
-            { id: 'p1', label: 'Dice 900g chicken' },
-            { id: 'p2', label: 'Mix 200g yoghurt, tandoori masala, ginger/garlic' },
-            { id: 'p3', label: 'Coat chicken & refrigerate' },
-            { id: 'p4', label: 'Cube 500g paneer' },
-            { id: 'p5', label: 'Mix 100g yoghurt, tikka spice' },
-            { id: 'p6', label: 'Coat paneer gently & refrigerate' }
+            { id: 'p1', label: 'Rinse 500g dry Red Split Lentils & 900g Long Grain Rice' },
+            { id: 'p2', label: 'Cook 900g Rice in rice cooker' },
+            { id: 'p3', label: 'Boil Lentils with Tandoori/Tikka spices, ginger & garlic' },
+            { id: 'p4', label: 'Dice 1kg Chicken Breast' },
+            { id: 'p5', label: 'Heat 15ml oil in wok and fry chicken completely through' },
+            { id: 'p6', label: 'Pour 2kg Frozen Mixed Veg into wok. Stir-fry till water evaporates' },
+            { id: 'p7', label: 'Divide Dahl & Rice evenly across 5 Lunch containers' },
+            { id: 'p8', label: 'Divide Chicken & Veg evenly across 5 Dinner containers' }
         ];
 
-        let prepState = JSON.parse(localStorage.getItem('prepState')) || [];
+        let prepState = JSON.parse(localStorage.getItem('prepStateBudget')) || [];
 
         function initApp() {
             const container = document.getElementById('prepList');
@@ -99,9 +91,9 @@
             prepSteps.forEach(step => {
                 const isChecked = prepState.includes(step.id) ? 'checked' : '';
                 container.innerHTML += `
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" id="${step.id}" class="checkbox-custom flex-shrink-0" ${isChecked} onchange="togglePrep('${step.id}', this.checked)">
-                        <label for="${step.id}" class="text-sm font-medium ${isChecked ? 'line-through opacity-50' : ''}">${step.label}</label>
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="${step.id}" class="checkbox-custom flex-shrink-0 mt-1" ${isChecked} onchange="togglePrep('${step.id}', this.checked)">
+                        <label for="${step.id}" class="text-sm font-medium leading-relaxed ${isChecked ? 'line-through text-stone-500' : 'text-stone-300'}">${step.label}</label>
                     </div>
                 `;
             });
@@ -111,14 +103,16 @@
             if (navigator.vibrate) navigator.vibrate(15);
             if (isChecked) prepState.push(id);
             else prepState = prepState.filter(i => i !== id);
-            localStorage.setItem('prepState', JSON.stringify(prepState));
+            localStorage.setItem('prepStateBudget', JSON.stringify(prepState));
             initApp();
         }
 
         function resetPrep() {
-            prepState = [];
-            localStorage.setItem('prepState', JSON.stringify(prepState));
-            initApp();
+            if(confirm("Reset prep workflow?")) {
+                prepState = [];
+                localStorage.setItem('prepStateBudget', JSON.stringify(prepState));
+                initApp();
+            }
         }
 
         document.addEventListener('DOMContentLoaded', initApp);
