@@ -1,0 +1,15 @@
+{
+  "name": "Life Protocol Hub",
+  "short_name": "Protocol",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1c1917",
+  "theme_color": "#059669",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3233/3233497.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
